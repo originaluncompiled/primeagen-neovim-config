@@ -26,13 +26,19 @@ return {
         require("mason").setup()
         require("mason-lspconfig").setup({
             ensure_installed = {
-                "lua_ls",
                 "rust_analyzer",
-                "tsserver",
+                "ts_ls",
+                "eslint",
+                "pylsp",
+                "lua_ls",
+                "html",
+                "cssls",
+                "tailwindcss",
+                "jsonls",
+                "solang",
             },
             handlers = {
                 function(server_name) -- default handler (optional)
-
                     require("lspconfig")[server_name].setup {
                         capabilities = capabilities
                     }
@@ -49,6 +55,23 @@ return {
                                 }
                             }
                         }
+                    }
+                end,
+
+                ["pylsp"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.pylsp.setup {
+                        capabilities = capabilities,
+                        settings = {
+                            pylsp = {
+                                plugins = {
+                                    pycodestyle = {
+                                        maxLineLength = 120,
+                                        ignore = { "E501" },
+                                    },
+                                },
+                            },
+                        },
                     }
                 end,
             }
@@ -71,6 +94,7 @@ return {
             sources = cmp.config.sources({
                 { name = 'nvim_lsp' },
                 { name = 'luasnip' }, -- For luasnip users.
+                { name = "supermaven" },
             }, {
                 { name = 'buffer' },
             })
